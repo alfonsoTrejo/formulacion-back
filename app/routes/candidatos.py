@@ -23,3 +23,23 @@ def crear_candidato():
 def get_candidatos_por_partido(partido_id):
     data = supabase.table("candidato").select("*").eq("partido_id", partido_id).execute()
     return jsonify(data.data)
+
+@candidatos_bp.route("/candidatos/<int:candidato_id>", methods=["DELETE"])
+def eliminar_candidato(candidato_id):
+    try:
+        # Eliminar el registro de Supabase
+        response = supabase.table("candidato").delete().eq("id", candidato_id).execute()
+        
+        # Verificar si se eliminó correctamente
+        if len(response.data) > 0:
+            return jsonify({"mensaje": "Candidato eliminado correctamente", "id": candidato_id}), 200
+        else:
+            return jsonify({"error": "Candidato no encontrado"}), 404
+            
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+@candidatos_bp.route("/candidatos/<int:candidato_id>", methods=["GET"])
+def get_candidato(candidato_id):
+    data = supabase.table("candidato").select("*").eq("id", candidato_id).single().execute()
+    return jsonify(data.data)

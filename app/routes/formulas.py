@@ -33,3 +33,8 @@ def eliminar_formula(formula_id):
             
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@formulas_bp.route("/formulas/<int:formula_id>", methods=["GET"])
+def get_formula(formula_id):
+    data = supabase.table("formula").select("*").eq("id", formula_id).single().execute()
+    return jsonify(data.data)
